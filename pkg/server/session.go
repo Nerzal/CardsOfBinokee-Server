@@ -1,6 +1,12 @@
 package server
 
-type Session struct {
-	Client1 *Client
-	Client2 *Client
+import (
+	"github.com/satori/go.uuid"
+)
+
+type session struct {
+	ID        *uuid.UUID
+	Player1   *client
+	Player2   *client
+	Specators []client
 }
