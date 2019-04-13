@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"log"
 	"net"
-	"strconv"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -65,7 +64,7 @@ func (server *server) handleNewConnection(newConnection net.Conn) {
 
 func (server *server) checkQueue() {
 	for {
-		log.Println("Queue: current queue length: " + strconv.Itoa(len(server.queue.Clients)))
+		// log.Println("Queue: current queue length: " + strconv.Itoa(len(server.queue.Clients)))
 		if len(server.queue.Clients) >= 2 {
 			newSession := createNewSession(server.queue)
 			server.activeSessions = append(server.activeSessions, newSession)
@@ -95,5 +94,10 @@ func readPackage(c net.Conn) {
 	}
 
 	go log.Printf("server: conn: echo %q\n", string(buf[:n]))
+
+	_, err = c.Write([]byte("Hallo Client, du listiger Lurch! :) :-*"))
+	if err != nil {
+		go log.Println("Ohh noees!!!111elf I failed, sry bro!  ", err)
+	}
 	c.Close()
 }
