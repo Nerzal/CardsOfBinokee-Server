@@ -26,12 +26,12 @@ func NewCardAPI(handler card.Handler) CardAPI {
 func (cardAPI *cardAPI) PostCards(c echo.Context) error {
 	var request []core.Card
 	err := c.Bind(&request)
-	
+
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "U failed!")
 	}
 
-	err = cardAPI.handler.PostCards(nil)
+	err = cardAPI.handler.PostCards(request)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "Oh noes :/")
 	}
@@ -40,10 +40,6 @@ func (cardAPI *cardAPI) PostCards(c echo.Context) error {
 }
 
 func (cardAPI *cardAPI) GetCards(c echo.Context) error {
-	result, err := cardAPI.handler.GetCards()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, "Oh noes :/")
-	}
-
+	result := cardAPI.handler.GetCards()
 	return c.JSON(http.StatusOK, result)
 }

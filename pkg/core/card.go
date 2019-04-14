@@ -1,7 +1,11 @@
 package core
 
+import "github.com/go-bongo/bongo"
+
 // Card represents a card
 type Card struct {
+	bongo.DocumentBase `json:"-" bson:",inline"`
+
 	ID           int    `json:"id"`
 	Name         string `json:"name"`
 	Description  string `json:"description,omitempty"`

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/Nerzal/CardsOfBinokee-Server/pkg/card"
+	"github.com/Nerzal/CardsOfBinokee-Server/pkg/repository/mongo"
 
 	"github.com/labstack/echo"
 
@@ -44,7 +45,12 @@ func main() {
 	}
 	config := &tls.Config{Certificates: []tls.Certificate{cer}}
 
-	cardHandler := card.NewHandler()
+	cardRepository, err := mongo.NewCardRepository()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cardHandler := card.NewHandler(cardRepository)
 	cardAPI := api.NewCardAPI(cardHandler)
 	restAPI := api.NewAPI(cardAPI)
 	go startRestAPI(restAPI)
