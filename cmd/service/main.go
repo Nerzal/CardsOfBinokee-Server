@@ -4,6 +4,11 @@ import (
 	"crypto/tls"
 	"log"
 
+	"github.com/Nerzal/CardsOfBinokee-Server/pkg/card"
+
+	"github.com/labstack/echo"
+
+	"github.com/Nerzal/CardsOfBinokee-Server/pkg/api"
 	"github.com/Nerzal/CardsOfBinokee-Server/pkg/server"
 )
 
@@ -39,7 +44,19 @@ func main() {
 	}
 	config := &tls.Config{Certificates: []tls.Certificate{cer}}
 
+	cardHandler := card.NewHandler()
+	cardAPI := api.NewCardAPI(cardHandler)
+	restAPI := api.NewAPI(cardAPI)
+	go startRestAPI(restAPI)
+
 	server := server.NewServer(config)
 	err = server.Serve()
 	log.Fatal(err)
+}
+
+func startRestAPI(restAPI api.API) {
+	// init rest-API
+	router := echo.New()
+	restAPI.AddRoutes(router)
+	go router.Logger.Fatal(router.Start(":8090"))
 }
