@@ -41,5 +41,10 @@ func (cardAPI *cardAPI) PostCards(c echo.Context) error {
 
 func (cardAPI *cardAPI) GetCards(c echo.Context) error {
 	result := cardAPI.handler.GetCards()
-	return c.JSON(http.StatusOK, result)
+	response := CardsResponse{Items: result}
+	return c.JSON(http.StatusOK, response)
+}
+
+type CardsResponse struct {
+	Items []core.Card `json:"items"`
 }

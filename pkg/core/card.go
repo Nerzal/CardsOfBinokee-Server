@@ -16,3 +16,4 @@ type Card struct {
 	BackgroundID int    `json:"backgroundID"`
 	CreatureID   int    `json:"creatureID"`
 }
+
