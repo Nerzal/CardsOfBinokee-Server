@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"crypto/tls"
+	"log"
 	"net"
 	"os"
 	"strings"
@@ -25,6 +26,10 @@ func getDialInfo() *mgo.DialInfo {
 	dbUser := os.Getenv(KeyMongodbUsername)
 	dbPassword := os.Getenv(KeyMongodbPassword)
 	replicaSetName := os.Getenv(KeyMongodbReplicaSetName)
+
+	log.Println("MongodbServer: " + os.Getenv(KeyMongodbServer))
+	log.Println("DBName: " + dbName)
+	log.Println("SSL: " + KeyMongodbSSL)
 
 	dialInfo := &mgo.DialInfo{
 		Addrs:          dbHost,
