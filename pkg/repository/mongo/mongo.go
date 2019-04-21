@@ -29,7 +29,7 @@ func getDialInfo() *mgo.DialInfo {
 
 	log.Println("MongodbServer: " + os.Getenv(KeyMongodbServer))
 	log.Println("DBName: " + dbName)
-	log.Println("SSL: " + KeyMongodbSSL)
+	log.Println("SSL: " + os.Getenv(KeyMongodbSSL))
 
 	dialInfo := &mgo.DialInfo{
 		Addrs:          dbHost,

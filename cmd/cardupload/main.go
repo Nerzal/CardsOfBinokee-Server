@@ -12,7 +12,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Version = "0.1"
-	app.Usage = "Automatically generate RESTful API documentation with Swagger 2.0 for Go."
+	app.Usage = "Upload cards"
 	app.Commands = []cli.Command{
 		{
 			Name:    "post",
@@ -23,6 +23,7 @@ func main() {
 				json := c.String("json")
 				resp, err := resty.R().
 					SetBody(json).
+					SetHeader("Content-Type", "application/json").
 					Post(path)
 
 				if err != nil {
@@ -31,6 +32,7 @@ func main() {
 
 				if resp.IsError() {
 					log.Println("Failed to upload json")
+					log.Println(string(resp.Body()))
 				}
 
 				return nil

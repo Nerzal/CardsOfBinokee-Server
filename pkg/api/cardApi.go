@@ -30,6 +30,7 @@ func (cardAPI *cardAPI) PostCards(c echo.Context) error {
 	err := c.Bind(&request)
 
 	if err != nil {
+		log.Error("Initial Error: ", err)
 		requestBodyBytes, err := ioutil.ReadAll(c.Request().Body)
 		if err != nil {
 			log.Error(err)
