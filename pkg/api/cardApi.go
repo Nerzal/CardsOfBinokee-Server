@@ -1,11 +1,13 @@
 package api
 
 import (
+	"io/ioutil"
 	"net/http"
 
 	"github.com/Nerzal/CardsOfBinokee-Server/pkg/card"
 	"github.com/Nerzal/CardsOfBinokee-Server/pkg/core"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 )
 
 type CardAPI interface {
@@ -24,15 +26,32 @@ func NewCardAPI(handler card.Handler) CardAPI {
 }
 
 func (cardAPI *cardAPI) PostCards(c echo.Context) error {
-	var request []core.Card
+	var request CardsResponse
 	err := c.Bind(&request)
 
 	if err != nil {
+		requestBodyBytes, err := ioutil.ReadAll(c.Request().Body)
+		if err != nil {
+			log.Error(err)
+		}
+		log.Info(string(requestBodyBytes))
+		log.Error("Failed to deserialize request body: ", err)
 		return c.JSON(http.StatusBadRequest, "U failed!")
 	}
 
-	err = cardAPI.handler.PostCards(request)
+	if len(request.Items) == 0 {
+		requestBodyBytes, err := ioutil.ReadAll(c.Request().Body)
+		if err != nil {
+			log.Error(err)
+		}
+		log.Info(string(requestBodyBytes))
+		log.Error("Failed to save cards. Empty array not allowed!")
+		return c.JSON(http.StatusBadRequest, "Empty Array!")
+	}
+
+	err = cardAPI.handler.PostCards(request.Items)
 	if err != nil {
+		log.Error("Failed to handle PostCards request: ", err)
 		return c.JSON(http.StatusInternalServerError, "Oh noes :/")
 	}
 

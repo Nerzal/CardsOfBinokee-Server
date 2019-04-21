@@ -13,4 +13,4 @@ COPY --from=build /go/src/github.com/Nerzal/CardsOfBinokee-Server/cmd/service /b
 
 EXPOSE 995
 
-CMD ["/bin/app"]
+ENTRYPOINT ["bin/app"]
