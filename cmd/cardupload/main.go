@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+	log.Println("Attempting to upload card database..")
 	app := cli.NewApp()
 	app.Version = "0.1"
 	app.Usage = "Upload cards"
@@ -20,19 +22,31 @@ func main() {
 			Usage:   "Upload json",
 			Action: func(c *cli.Context) error {
 				path := c.String("path")
-				json := c.String("json")
+				log.Println("Upload path is: " + path)
+				log.Println("Attempting to read file...")
+
+				cardBytes, err := ioutil.ReadFile("cards.json")
+				if err != nil {
+					log.Println(err)
+					return err
+				} else {
+					log.Println("Successfully read card.json")
+				}
+
 				resp, err := resty.R().
-					SetBody(json).
+					SetBody(cardBytes).
 					SetHeader("Content-Type", "application/json").
 					Post(path)
 
 				if err != nil {
 					log.Println(err)
+					return err
 				}
 
 				if resp.IsError() {
 					log.Println("Failed to upload json")
 					log.Println(string(resp.Body()))
+					return nil
 				}
 
 				return nil
@@ -55,6 +69,8 @@ func main() {
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		log.Println("Successfully uploaded the cards!")
 	}
 
 	reader := bufio.NewReader(os.Stdin)

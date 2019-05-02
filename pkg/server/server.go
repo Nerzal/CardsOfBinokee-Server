@@ -7,6 +7,7 @@ import (
 	"time"
 
 	uuid "github.com/satori/go.uuid"
+	"encoding/binary"
 )
 
 type Server interface {
@@ -86,14 +87,28 @@ func createNewSession(queue *queue) *session {
 	}
 }
 
-func readPackage(c net.Conn) {
-	buf := make([]byte, 512)
-	n, err := c.Read(buf)
-	if err != nil {
-		go log.Printf("server: conn: read: %s", err)
-	}
+type message struct {
+	MessageType int
+	PayloadLength int
+	Payload []byte
+}
 
-	go log.Printf("server: conn: echo %q\n", string(buf[:n]))
+func readPackage(c net.Conn) {
+	message := &message{}
+	err := binary.Read(c, binary.LittleEndian, message)
+	if err != nil {
+		go log.Printf("Failed to read message")
+		return
+	}
+	
+	switch message.MessageType {
+	case 0:
+		break
+	case 1:
+		break
+	case 2:
+		break
+	}
 
 	_, err = c.Write([]byte("Hallo Client, du listiger Lurch! :) :-*"))
 	if err != nil {

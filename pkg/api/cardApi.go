@@ -56,6 +56,8 @@ func (cardAPI *cardAPI) PostCards(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Oh noes :/")
 	}
 
+	log.Info("Successfully updated card database!")
+
 	return c.JSON(http.StatusOK, "ok")
 }
 
