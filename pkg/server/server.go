@@ -6,8 +6,9 @@ import (
 	"net"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
 	"encoding/binary"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type Server interface {
@@ -30,7 +31,7 @@ func NewServer(tlsConfig *tls.Config) Server {
 }
 
 func (server *server) Serve() error {
-	l, err := tls.Listen("tcp", ":995", server.tlsConfig)
+	l, err := tls.Listen("tcp", ":1337", server.tlsConfig)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -59,7 +60,7 @@ func (server *server) handleNewConnection(newConnection net.Conn) {
 	}
 
 	server.queue.Push(newClient)
-
+	log.Println("Handled new connection")
 	go readPackage(newConnection)
 }
 
@@ -88,19 +89,27 @@ func createNewSession(queue *queue) *session {
 }
 
 type message struct {
-	MessageType int
+	MessageType   int
 	PayloadLength int
-	Payload []byte
+	Payload       []byte
 }
+
+const (
+	Hello = iota
+	KeepAlive
+	GameOver
+	Turn
+	
+)
 
 func readPackage(c net.Conn) {
 	message := &message{}
 	err := binary.Read(c, binary.LittleEndian, message)
 	if err != nil {
-		go log.Printf("Failed to read message")
+		go log.Println("Failed to read message, err:", err)
 		return
 	}
-	
+
 	switch message.MessageType {
 	case 0:
 		break

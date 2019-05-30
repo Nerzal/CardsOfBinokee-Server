@@ -29,14 +29,13 @@ func main() {
 	}
 	config := &tls.Config{RootCAs: roots}
 
-	conn, err := tls.Dial("tcp", "localhost:995", config)
+	conn, err := tls.Dial("tcp", "localhost:1337", config)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close() 
+	defer conn.Close()
 
 	n, err := conn.Write([]byte("Hello Server!"))
 	log.Println(n, "    ", err)
-	
 
 }

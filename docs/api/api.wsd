@@ -1,0 +1,22 @@
+@startuml
+
+autonumber
+== Create Session == 
+Client1 -> Server : hello
+activate Server
+Server -> Server : addClient
+Client1 <- Server : registered
+deactivate Server
+
+Client2 -> Server : hello
+activate Server
+Server -> Server : addClient
+Client2 <- Server : registered
+
+
+== Start Session ==
+Server -> Server : createNewSession
+Client1 <- Server : sendSessionInfo
+Client2 <- Server : sendSessionInfo
+deactivate Server
+@enduml
